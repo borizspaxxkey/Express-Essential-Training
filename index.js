@@ -15,6 +15,8 @@ app.use(express.json());
 // method to use Urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+// This is for proxies
+app.set('trust proxy', 'loopback');
 // This is for images folder on path images
 app.use('/images', express.static('images'));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -29,23 +31,19 @@ app.get('/', (req, res) => {
 // URLEncoded data
 // hello=URLEncoded+is+cool
 app.post('/newItem', (req, res) => {
-  console.log(req.body);
   res.send(req.body);
 });
 
 app.get('/item/:id', (req, res, next) => {
   //This is the middleware that pulls the data
-  console.log(req.params.id);
   let user = Number(req.params.id);
-  console.log(data[user]);
   res.send(data[user]);
   // middleware that uses the request object
   console.log(`Request from: ${req.originalUrl}`);
-  console.log(`Request type: ${req.method}`);
+
   // Everything above is middleware
   next();
 }, (req, res) => {
-  console.log('Did you get the right data');
 });
 
 app.route('/item')
@@ -70,5 +68,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Your Server is running on port ${PORT}`);
-  console.log(data);
 });
